@@ -3,9 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  tmdb: {
+    apiKey: "4d9b4078c1d351e3c358d315d0830bfe",
+    baseUrl: "https://api.themoviedb.org/3",
+    imgBase: "https://image.tmdb.org/t/p/w500",
+  },
 };
-
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
