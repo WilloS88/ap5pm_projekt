@@ -19,8 +19,17 @@ import {
 	IonCardContent,
 	IonImg,
 	IonIcon,
+	IonModal,
+	IonButtons,
+	IonList,
+	IonItem,
+	IonLabel,
+	IonText,
+	IonChip,
 } from "@ionic/angular/standalone";
-import { TmdbService, TmdbMovie } from "../services/tmdb.service";
+import { TmdbService, TmdbMovie, TmdbMovieDetail } from "../services/tmdb.service";
+import { addIcons } from "ionicons";
+import { closeOutline } from "ionicons/icons";
 
 @Component({
 	selector: "app-tab1",
@@ -47,6 +56,14 @@ import { TmdbService, TmdbMovie } from "../services/tmdb.service";
 		IonCardContent,
 		IonImg,
 		IonIcon,
+		IonHeader,
+		IonModal,
+		IonButtons,
+		IonList,
+		IonItem,
+		IonLabel,
+		IonText,
+		IonChip,
 	],
 })
 export class Tab1Page implements OnInit {
@@ -54,7 +71,13 @@ export class Tab1Page implements OnInit {
 	loading = false;
 	errorMessage: string | null = null;
 
-	constructor(private tmdb: TmdbService) {}
+	detailOpen = false;
+	detailLoading = false;
+	detail: TmdbMovieDetail | null = null;
+
+	constructor(public tmdb: TmdbService) {
+		addIcons({ closeOutline });
+	}
 
 	ngOnInit() {
 		this.loadRandom();
@@ -88,5 +111,46 @@ export class Tab1Page implements OnInit {
 
 	poster(movie: TmdbMovie) {
 		return this.tmdb.img(movie.poster_path);
+	}
+
+	doRefresh(ev: any) {
+		this.loadRandom(ev);
+	}
+
+	getDirectors(detail: TmdbMovieDetail | null): string {
+		if (!detail || !detail.credits || !detail.credits.crew) {
+			return "Unknown";
+		}
+
+		const names = detail.credits.crew
+			.filter((c) => c.job === "Director")
+			.map((c) => c.name);
+
+		return names.length ? names.join(", ") : "Unknown";
+	}
+
+
+	openDetail(movie: TmdbMovie) {
+		this.detailOpen = true;
+		this.detailLoading = true;
+		this.detail = null;
+
+		this.tmdb.getMovieDetail(movie.id).subscribe({
+			next: (d) => {
+				this.detail = d;
+			},
+			error: (err) => {
+				console.error(err);
+				this.detailLoading = false;
+			},
+			complete: () => {
+				this.detailLoading = false;
+			},
+		});
+	}
+
+	closeDetail() {
+		this.detailOpen = false;
+		this.detail = null;
 	}
 }

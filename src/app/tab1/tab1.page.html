@@ -31,7 +31,7 @@
 	<ion-grid *ngIf="!loading && !errorMessage && movies.length > 0">
 		<ion-row>
 			<ion-col size="6" sizeMd="4" sizeLg="3" *ngFor="let movie of movies">
-				<ion-card class="movie-card">
+				<ion-card class="movie-card" (click)="openDetail(movie)">
 					<ion-img [src]="poster(movie)" loading="lazy"></ion-img>
 
 					<ion-card-header>
@@ -50,4 +50,75 @@
 			</ion-col>
 		</ion-row>
 	</ion-grid>
+
+	<!-- DETAIL MODAL -->
+	<ion-modal [isOpen]="detailOpen" (didDismiss)="closeDetail()">
+		<ng-template>
+			<ion-header>
+				<ion-toolbar>
+					<ion-title>{{ detail?.title || 'Detail filmu' }}</ion-title>
+					<ion-buttons slot="end">
+						<ion-button (click)="closeDetail()">
+							<ion-icon slot="icon-only" name="close-outline"></ion-icon>
+						</ion-button>
+					</ion-buttons>
+				</ion-toolbar>
+			</ion-header>
+
+			<ion-content>
+				<ion-spinner *ngIf="detailLoading" class="ion-padding" name="dots"></ion-spinner>
+
+				<ng-container *ngIf="detail as d">
+					<ion-img [src]="tmdb.img(d.poster_path, 'w500')"></ion-img>
+
+					<ion-card>
+						<ion-card-header>
+							<ion-card-title>{{ d.title }}</ion-card-title>
+						</ion-card-header>
+						<ion-card-content>
+							<p>
+								<strong>Year:</strong> {{ d.release_date | date:'yyyy' }}<br />
+								<strong>Runtime:</strong> {{ d.runtime }} min<br />
+								<strong>Rating:</strong> {{ d.vote_average | number:'1.1-1' }}/10<br />
+								<strong>Genres:</strong>
+								<span *ngFor="let g of d.genres; let last = last"> {{ g.name }}<span *ngIf="!last">, </span> </span>
+							</p>
+						</ion-card-content>
+					</ion-card>
+
+					<ion-card>
+						<ion-card-header>
+							<ion-card-title>Overview</ion-card-title>
+						</ion-card-header>
+						<ion-card-content> {{ d.overview }} </ion-card-content>
+					</ion-card>
+
+					<ion-card *ngIf="d.credits?.crew?.length">
+						<ion-card-header>
+							<ion-card-title>Director</ion-card-title>
+						</ion-card-header>
+						<ion-card-content>
+							<ion-text> {{ getDirectors(d) }} </ion-text>
+						</ion-card-content>
+					</ion-card>
+
+					<ion-card *ngIf="d.credits?.cast?.length">
+						<ion-card-header>
+							<ion-card-title>Cast</ion-card-title>
+						</ion-card-header>
+						<ion-card-content>
+							<ion-list>
+								<ion-item *ngFor="let c of d.credits.cast | slice:0:8">
+									<ion-label>
+										<strong>{{ c.name }}</strong>
+										<div *ngIf="c.character">as {{ c.character }}</div>
+									</ion-label>
+								</ion-item>
+							</ion-list>
+						</ion-card-content>
+					</ion-card>
+				</ng-container>
+			</ion-content>
+		</ng-template>
+	</ion-modal>
 </ion-content>

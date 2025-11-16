@@ -19,6 +19,24 @@ export interface Paged<T> {
 	total_results: number;
 }
 
+export interface TmdbMovieDetail extends TmdbMovie {
+	runtime: number;
+	genres: { id: number; name: string }[];
+	credits: {
+		cast: {
+			id: number;
+			name: string;
+			character: string;
+			profile_path: string | null;
+		}[];
+		crew: {
+			id: number;
+			name: string;
+			job: string;
+		}[];
+	};
+}
+
 @Injectable({ providedIn: "root" })
 export class TmdbService {
 	private api = environment.tmdb.baseUrl;
@@ -40,5 +58,10 @@ export class TmdbService {
 
 	img(path: string | null, size: "w185" | "w342" | "w500" = "w342") {
 		return path ? `https://image.tmdb.org/t/p/${size}${path}` : "assets/placeholder-poster.png";
+	}
+
+	getMovieDetail(id: number): Observable<TmdbMovieDetail> {
+		const params = new HttpParams().set("api_key", this.key).set("append_to_response", "credits");
+		return this.http.get<TmdbMovieDetail>(`${this.api}/movie/${id}`, { params });
 	}
 }
