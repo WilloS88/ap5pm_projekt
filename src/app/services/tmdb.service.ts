@@ -64,4 +64,26 @@ export class TmdbService {
 		const params = new HttpParams().set("api_key", this.key).set("append_to_response", "credits");
 		return this.http.get<TmdbMovieDetail>(`${this.api}/movie/${id}`, { params });
 	}
+
+	searchMovies(query: string, page = 1): Observable<Paged<TmdbMovie>> {
+		const params = new HttpParams()
+			.set("api_key", this.key)
+			.set("query", query)
+			.set("page", page.toString())
+			.set("include_adult", "false");
+
+		return this.http.get<Paged<TmdbMovie>>(`${this.api}/search/movie`, { params });
+	}
+
+	searchPerson(query: string): Observable<any> {
+		const params = new HttpParams().set("api_key", this.key).set("query", query).set("include_adult", "false");
+
+		return this.http.get<any>(`${this.api}/search/person`, { params });
+	}
+
+	getPersonMovies(personId: number): Observable<any> {
+		const params = new HttpParams().set("api_key", this.key);
+
+		return this.http.get<any>(`${this.api}/person/${personId}/movie_credits`, { params });
+	}
 }

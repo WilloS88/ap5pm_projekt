@@ -25,7 +25,6 @@ import {
 	IonItem,
 	IonLabel,
 	IonText,
-	IonChip,
 } from "@ionic/angular/standalone";
 import { TmdbService, TmdbMovie, TmdbMovieDetail } from "../services/tmdb.service";
 import { addIcons } from "ionicons";
@@ -63,7 +62,6 @@ import { closeOutline } from "ionicons/icons";
 		IonItem,
 		IonLabel,
 		IonText,
-		IonChip,
 	],
 })
 export class Tab1Page implements OnInit {
@@ -122,13 +120,10 @@ export class Tab1Page implements OnInit {
 			return "Unknown";
 		}
 
-		const names = detail.credits.crew
-			.filter((c) => c.job === "Director")
-			.map((c) => c.name);
+		const names = detail.credits.crew.filter((c) => c.job === "Director").map((c) => c.name);
 
 		return names.length ? names.join(", ") : "Unknown";
 	}
-
 
 	openDetail(movie: TmdbMovie) {
 		this.detailOpen = true;
