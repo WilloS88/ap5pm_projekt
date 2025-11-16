@@ -28,8 +28,9 @@ import {
 	IonText,
 } from "@ionic/angular/standalone";
 import { TmdbService, TmdbMovie, TmdbMovieDetail } from "../services/tmdb.service";
+import { FavoritesService } from "../services/favorites.service";
 import { addIcons } from "ionicons";
-import { closeOutline, searchOutline, star } from "ionicons/icons";
+import { closeOutline, searchOutline, star, starOutline } from "ionicons/icons";
 
 type SearchType = "title" | "director" | null;
 
@@ -81,8 +82,8 @@ export class Tab2Page {
 	detailLoading = false;
 	detail: TmdbMovieDetail | null = null;
 
-	constructor(public tmdb: TmdbService) {
-		addIcons({ closeOutline, searchOutline, star });
+	constructor(public tmdb: TmdbService, private favs: FavoritesService) {
+		addIcons({ closeOutline, searchOutline, star, starOutline });
 	}
 
 	// ***** INPUT HANDLERS *****
@@ -271,5 +272,18 @@ export class Tab2Page {
 
 		const names = detail.credits.crew.filter((c) => c.job === "Director").map((c) => c.name);
 		return names.length ? names.join(", ") : "Unknown";
+	}
+
+	isFavorite(movie: TmdbMovie | TmdbMovieDetail | null | undefined): boolean {
+		if (!movie) return false;
+		return this.favs.isFavorite(movie.id);
+	}
+
+	toggleFavorite(movie: TmdbMovie | TmdbMovieDetail | null | undefined, ev?: Event) {
+		if (ev) {
+			ev.stopPropagation();
+		}
+		if (!movie) return;
+		this.favs.toggle(movie);
 	}
 }

@@ -27,8 +27,9 @@ import {
 	IonText,
 } from "@ionic/angular/standalone";
 import { TmdbService, TmdbMovie, TmdbMovieDetail } from "../services/tmdb.service";
+import { FavoritesService } from "../services/favorites.service";
 import { addIcons } from "ionicons";
-import { closeOutline } from "ionicons/icons";
+import { closeOutline, star, starOutline } from "ionicons/icons";
 
 @Component({
 	selector: "app-tab1",
@@ -73,8 +74,8 @@ export class Tab1Page implements OnInit {
 	detailLoading = false;
 	detail: TmdbMovieDetail | null = null;
 
-	constructor(public tmdb: TmdbService) {
-		addIcons({ closeOutline });
+	constructor(public tmdb: TmdbService, private favs: FavoritesService) {
+		addIcons({ closeOutline, star, starOutline });
 	}
 
 	ngOnInit() {
@@ -147,5 +148,16 @@ export class Tab1Page implements OnInit {
 	closeDetail() {
 		this.detailOpen = false;
 		this.detail = null;
+	}
+
+	isFavorite(movie: TmdbMovie | TmdbMovieDetail | null | undefined): boolean {
+		if (!movie) return false;
+		return this.favs.isFavorite(movie.id);
+	}
+
+	toggleFavorite(movie: TmdbMovie | TmdbMovieDetail | null | undefined, ev?: Event) {
+		if (ev) ev.stopPropagation();
+		if (!movie) return;
+		this.favs.toggle(movie);
 	}
 }

@@ -17,54 +17,6 @@
 	--color: #ffffff;
 	border-radius: 12px;
 	overflow: hidden;
-
-	ion-img {
-		width: 100%;
-		height: auto;
-		aspect-ratio: 2 / 3;
-		object-fit: contain;
-		background: #111;
-		display: block;
-	}
-
-	ion-card-header {
-		padding-bottom: 4px;
-	}
-
-	ion-card-title {
-		font-size: 14px;
-		font-weight: 600;
-	}
-
-	ion-card-subtitle {
-		display: flex;
-		align-items: center;
-		gap: 4px;
-		font-size: 12px;
-		margin-top: 4px;
-	}
-
-	.star {
-		font-size: 14px;
-		color: #f5c518;
-	}
-
-	ion-card-content {
-		font-size: 12px;
-	}
-
-	.year {
-		font-weight: 600;
-		margin-bottom: 4px;
-		opacity: 0.8;
-	}
-
-	.overview {
-		max-height: 4.5em;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
 	cursor: pointer;
 	transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
 
@@ -78,10 +30,99 @@
 	}
 
 	ion-img {
-		transition: transform 0.25s ease;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 2 / 3;
+		object-fit: contain;
+		background: #111;
+		display: block;
 	}
 
 	&:hover ion-img {
 		transform: scale(1.03);
 	}
+
+	ion-card-header {
+		padding-bottom: 4px;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	ion-card-title {
+		font-size: 14px;
+		font-weight: 600;
+	}
+
+	.card-header-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 4px;
+		margin-top: 6px;
+	}
+
+	.rating-star {
+		font-size: 14px;
+		color: #f5c518;
+	}
+
+	.fav-btn {
+		--background: transparent;
+		--box-shadow: none;
+		--padding-start: 0;
+		--padding-end: 0;
+		min-width: 28px;
+		height: 28px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-left: auto;
+	}
+
+	.fav-star {
+		color: #f5c518;
+		font-size: 20px;
+	}
+
+	ion-card-content {
+		font-size: 12px;
+		padding-top: 6px;
+	}
+
+	.year {
+		font-weight: 600;
+		margin-bottom: 4px;
+		opacity: 0.8;
+	}
+
+	.overview {
+		max-height: 4.5em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+.card-header-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 4px;
+}
+
+.rating-star {
+	font-size: 14px;
+	color: #f5c518;
+}
+
+.fav-btn {
+	--padding-start: 0;
+	--padding-end: 0;
+	min-width: 32px;
+	height: 32px;
+}
+
+.fav-star {
+	color: #f5c518;
+	font-size: 20px;
 }

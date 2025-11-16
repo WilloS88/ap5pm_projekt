@@ -56,10 +56,21 @@
 
 					<ion-card-header>
 						<ion-card-title>{{ movie.title }}</ion-card-title>
-						<ion-card-subtitle>
-							<ion-icon name="star" class="star"></ion-icon>
-							{{ movie.vote_average | number: "1.1-1" }}
-						</ion-card-subtitle>
+
+						<div class="card-header-row">
+							<ion-card-subtitle>
+								<ion-icon name="star" class="rating-star"></ion-icon>
+								{{ movie.vote_average | number: "1.1-1" }}
+							</ion-card-subtitle>
+
+							<ion-button fill="clear" size="small" class="fav-btn" (click)="toggleFavorite(movie, $event)">
+								<ion-icon
+									slot="icon-only"
+									[name]="isFavorite(movie) ? 'star' : 'star-outline'"
+									class="fav-star"
+								></ion-icon>
+							</ion-button>
+						</div>
 					</ion-card-header>
 
 					<ion-card-content>
@@ -78,6 +89,14 @@
 				<ion-toolbar>
 					<ion-title>{{ detail?.title || 'Detail filmu' }}</ion-title>
 					<ion-buttons slot="end">
+						<ion-button *ngIf="detail" (click)="toggleFavorite(detail, $event)">
+							<ion-icon
+								slot="icon-only"
+								[name]="isFavorite(detail) ? 'star' : 'star-outline'"
+								class="fav-star"
+							></ion-icon>
+						</ion-button>
+
 						<ion-button (click)="closeDetail()">
 							<ion-icon slot="icon-only" name="close-outline"></ion-icon>
 						</ion-button>
