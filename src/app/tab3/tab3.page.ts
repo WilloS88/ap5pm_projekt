@@ -63,6 +63,11 @@ import { closeOutline, star, starOutline } from "ionicons/icons";
 export class Tab3Page implements OnInit {
 	favorites: TmdbMovie[] = [];
 
+	allFavorites: TmdbMovie[] = [];
+	page = 1;
+	totalPages = 1;
+	private readonly pageSize = 20;
+
 	detailOpen = false;
 	detailLoading = false;
 	detail: TmdbMovieDetail | null = null;
@@ -73,8 +78,22 @@ export class Tab3Page implements OnInit {
 
 	ngOnInit() {
 		this.favs.favorites$.subscribe((list) => {
-			this.favorites = list;
+			this.allFavorites = list;
+			this.page = 1;
+			this.updatePage();
 		});
+	}
+
+	private updatePage() {
+		const all = this.allFavorites || [];
+		const total = Math.max(1, Math.ceil(all.length / this.pageSize));
+		this.totalPages = total || 1;
+		if (this.page > total) this.page = total || 1;
+		if (this.page < 1) this.page = 1;
+
+		const start = (this.page - 1) * this.pageSize;
+		const end = start + this.pageSize;
+		this.favorites = all.slice(start, end);
 	}
 
 	poster(movie: TmdbMovie) {
@@ -120,5 +139,17 @@ export class Tab3Page implements OnInit {
 		if (ev) ev.stopPropagation();
 		if (!movie) return;
 		this.favs.toggle(movie);
+	}
+
+	nextPage() {
+		if (this.page >= this.totalPages) return;
+		this.page++;
+		this.updatePage();
+	}
+
+	prevPage() {
+		if (this.page <= 1) return;
+		this.page--;
+		this.updatePage();
 	}
 }

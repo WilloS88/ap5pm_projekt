@@ -44,16 +44,19 @@ export class TmdbService {
 
 	constructor(private http: HttpClient) {}
 
-	getRandomCatalog(): Observable<Paged<TmdbMovie>> {
-		const randomPage = Math.floor(Math.random() * 50) + 1;
-
+	getCatalog(page = 1): Observable<Paged<TmdbMovie>> {
 		const params = new HttpParams()
 			.set("api_key", this.key)
 			.set("sort_by", "popularity.desc")
-			.set("page", randomPage.toString())
+			.set("page", page.toString())
 			.set("include_adult", "false");
 
 		return this.http.get<Paged<TmdbMovie>>(`${this.api}/discover/movie`, { params });
+	}
+
+	getRandomCatalog(): Observable<Paged<TmdbMovie>> {
+		const randomPage = Math.floor(Math.random() * 50) + 1;
+		return this.getCatalog(randomPage);
 	}
 
 	img(path: string | null, size: "w185" | "w342" | "w500" = "w342") {

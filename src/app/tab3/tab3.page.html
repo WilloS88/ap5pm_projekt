@@ -44,6 +44,14 @@
 		</ion-row>
 	</ion-grid>
 
+	<div class="pagination" *ngIf="favorites.length > 0 && totalPages > 1">
+		<ion-button fill="outline" size="small" (click)="prevPage()" [disabled]="page <= 1"> Prev </ion-button>
+
+		<span class="page-info"> Page {{ page }} / {{ totalPages }} </span>
+
+		<ion-button fill="outline" size="small" (click)="nextPage()" [disabled]="page >= totalPages"> Next </ion-button>
+	</div>
+
 	<!-- DETAIL MODAL -->
 	<ion-modal [isOpen]="detailOpen" (didDismiss)="closeDetail()">
 		<ng-template>

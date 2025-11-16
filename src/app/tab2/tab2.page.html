@@ -81,6 +81,15 @@
 			</ion-col>
 		</ion-row>
 	</ion-grid>
+	
+	<!-- PAGINATION -->
+	<div class="pagination" *ngIf="!loading && !errorMessage && movies.length > 0 && lastSearch !== null">
+		<ion-button fill="outline" size="small" (click)="prevPage()" [disabled]="page <= 1"> Prev </ion-button>
+
+		<span class="page-info"> Page {{ page }} / {{ totalPages }} </span>
+
+		<ion-button fill="outline" size="small" (click)="nextPage()" [disabled]="page >= totalPages"> Next </ion-button>
+	</div>
 
 	<!-- DETAIL MODAL -->
 	<ion-modal [isOpen]="detailOpen" (didDismiss)="closeDetail()">

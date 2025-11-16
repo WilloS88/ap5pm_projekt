@@ -78,6 +78,11 @@ export class Tab2Page {
 
 	lastSearch: SearchType = null;
 
+	page = 1;
+	totalPages = 1;
+	private readonly pageSize = 20;
+	private directorAllMovies: TmdbMovie[] = [];
+
 	detailOpen = false;
 	detailLoading = false;
 	detail: TmdbMovieDetail | null = null;
@@ -91,12 +96,14 @@ export class Tab2Page {
 	onTitleSearch(ev: CustomEvent) {
 		this.titleQuery = (ev.detail.value || "").toString();
 		this.lastSearch = "title";
+		this.page = 1;
 		this.searchByTitle();
 	}
 
 	onDirectorSearch(ev: CustomEvent) {
 		this.directorQuery = (ev.detail.value || "").toString();
 		this.lastSearch = "director";
+		this.page = 1;
 		this.searchByDirector();
 	}
 
@@ -121,6 +128,7 @@ export class Tab2Page {
 		if (!q) {
 			this.movies = [];
 			this.errorMessage = null;
+			this.totalPages = 1;
 			if (event) event.target.complete();
 			return;
 		}
@@ -133,6 +141,7 @@ export class Tab2Page {
 		this.tmdb.searchMovies(q, 1).subscribe({
 			next: (res) => {
 				this.movies = res.results || [];
+				this.totalPages = res.total_pages || 1;
 				this.loading = false;
 				if (event) event.target.complete();
 			},
@@ -152,6 +161,8 @@ export class Tab2Page {
 		if (!q) {
 			this.movies = [];
 			this.errorMessage = null;
+			this.directorAllMovies = [];
+			this.totalPages = 1;
 			if (event) event.target.complete();
 			return;
 		}
@@ -167,6 +178,7 @@ export class Tab2Page {
 
 				if (!persons.length) {
 					this.movies = [];
+					this.directorAllMovies = [];
 					this.errorMessage = `No director found for "${q}".`;
 					this.loading = false;
 					if (event) event.target.complete();
@@ -215,6 +227,18 @@ export class Tab2Page {
 				if (event) event.target.complete();
 			},
 		});
+	}
+
+	private applyDirectorPage() {
+		const all = this.directorAllMovies || [];
+		const total = Math.max(1, Math.ceil(all.length / this.pageSize));
+		this.totalPages = total;
+		if (this.page > total) this.page = total;
+		if (this.page < 1) this.page = 1;
+
+		const start = (this.page - 1) * this.pageSize;
+		const end = start + this.pageSize;
+		this.movies = all.slice(start, end);
 	}
 
 	// ***** COMMON *****
@@ -285,5 +309,25 @@ export class Tab2Page {
 		}
 		if (!movie) return;
 		this.favs.toggle(movie);
+	}
+
+	nextPage() {
+		if (this.page >= this.totalPages) return;
+		this.page++;
+		if (this.lastSearch === "title") {
+			this.searchByTitle();
+		} else if (this.lastSearch === "director") {
+			this.applyDirectorPage();
+		}
+	}
+
+	prevPage() {
+		if (this.page <= 1) return;
+		this.page--;
+		if (this.lastSearch === "title") {
+			this.searchByTitle();
+		} else if (this.lastSearch === "director") {
+			this.applyDirectorPage();
+		}
 	}
 }

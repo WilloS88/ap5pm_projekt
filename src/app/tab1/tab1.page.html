@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-	<ion-refresher slot="fixed" (ionRefresh)="loadRandom($event)">
+	<ion-refresher slot="fixed" (ionRefresh)="loadPage($event)">
 		<ion-refresher-content refreshingSpinner="circles"></ion-refresher-content>
 	</ion-refresher>
 
@@ -36,17 +36,21 @@
 
 					<ion-card-header>
 						<ion-card-title>{{ movie.title }}</ion-card-title>
-						<ion-card-subtitle>
-							<ion-icon name="star" class="star"></ion-icon>
-							{{ movie.vote_average | number: "1.1-1" }}
-						</ion-card-subtitle>
-						<ion-button fill="clear" size="small" class="fav-btn" (click)="toggleFavorite(movie, $event)">
-							<ion-icon
-								slot="icon-only"
-								[name]="isFavorite(movie) ? 'star' : 'star-outline'"
-								class="fav-star"
-							></ion-icon>
-						</ion-button>
+
+						<div class="card-header-row">
+							<ion-card-subtitle>
+								<ion-icon name="star" class="rating-star"></ion-icon>
+								{{ movie.vote_average | number: "1.1-1" }}
+							</ion-card-subtitle>
+
+							<ion-button fill="clear" size="small" class="fav-btn" (click)="toggleFavorite(movie, $event)">
+								<ion-icon
+									slot="icon-only"
+									[name]="isFavorite(movie) ? 'star' : 'star-outline'"
+									class="fav-star"
+								></ion-icon>
+							</ion-button>
+						</div>
 					</ion-card-header>
 
 					<ion-card-content>
@@ -57,6 +61,15 @@
 			</ion-col>
 		</ion-row>
 	</ion-grid>
+
+	<!-- 🔹 PAGINATION BAR -->
+	<div class="pagination" *ngIf="!loading && !errorMessage && movies.length > 0">
+		<ion-button fill="outline" size="small" (click)="prevPage()" [disabled]="page <= 1"> Prev </ion-button>
+
+		<span class="page-info"> Page {{ page }} / {{ totalPages }} </span>
+
+		<ion-button fill="outline" size="small" (click)="nextPage()" [disabled]="page >= totalPages"> Next </ion-button>
+	</div>
 
 	<!-- DETAIL MODAL -->
 	<ion-modal [isOpen]="detailOpen" (didDismiss)="closeDetail()">
