@@ -18,13 +18,13 @@
 	<!-- Error message -->
 	<div class="state state-error" *ngIf="!loading && errorMessage">
 		<p>{{ errorMessage }}</p>
-		<ion-button fill="outline" size="small" (click)="loadRandom()"> Try again </ion-button>
+		<ion-button fill="outline" size="small" (click)="loadPage()"> Try again </ion-button>
 	</div>
 
 	<!-- Empty state -->
 	<div class="state state-empty" *ngIf="!loading && !errorMessage && movies.length === 0">
 		<p>No movies loaded.</p>
-		<ion-button fill="outline" size="small" (click)="loadRandom()"> Load movies </ion-button>
+		<ion-button fill="outline" size="small" (click)="loadPage()"> Load movies </ion-button>
 	</div>
 
 	<!-- Movies grid -->

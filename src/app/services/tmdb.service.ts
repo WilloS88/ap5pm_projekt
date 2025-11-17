@@ -40,9 +40,12 @@ export interface TmdbMovieDetail extends TmdbMovie {
 @Injectable({ providedIn: "root" })
 export class TmdbService {
 	private api = environment.tmdb.baseUrl;
-	private key = environment.tmdb.apiKey;
+	private key: string;
 
-	constructor(private http: HttpClient) {}
+	constructor(private http: HttpClient) {
+		const raw: any = environment.tmdb.apiKey;
+		this.key = Array.isArray(raw) ? raw[0] ?? "" : raw ?? "";
+	}
 
 	getCatalog(page = 1): Observable<Paged<TmdbMovie>> {
 		const params = new HttpParams()
