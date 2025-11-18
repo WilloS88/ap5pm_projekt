@@ -6,8 +6,9 @@ const STORAGE_KEY = "favoriteMovies";
 
 @Injectable({ providedIn: "root" })
 export class FavoritesService {
-	private favoritesMap = new Map<number, TmdbMovie>();
-	private favoritesSubject = new BehaviorSubject<TmdbMovie[]>([]);
+	private favoritesMap 			= new Map<number, TmdbMovie>();
+	private favoritesSubject 	= new BehaviorSubject<TmdbMovie[]>([]);
+
 	favorites$ = this.favoritesSubject.asObservable();
 
 	constructor() {
@@ -17,7 +18,9 @@ export class FavoritesService {
 	private loadFromStorage() {
 		try {
 			const raw = localStorage.getItem(STORAGE_KEY);
-			if (!raw) return;
+
+			if (!raw) 
+				return;
 
 			const arr: TmdbMovie[] = JSON.parse(raw);
 			this.favoritesMap = new Map(arr.map((m) => [m.id, m]));
@@ -38,16 +41,20 @@ export class FavoritesService {
 	}
 
 	isFavorite(id: number | null | undefined): boolean {
-		if (id == null) return false;
+		if (id == null) 
+			return false;
+
 		return this.favoritesMap.has(id);
 	}
 
 	toggle(movie: TmdbMovie | null | undefined) {
-		if (!movie) return;
+		if (!movie) 
+			return;
 
 		if (this.favoritesMap.has(movie.id)) {
 			this.favoritesMap.delete(movie.id);
-		} else {
+		} 
+		else {
 			this.favoritesMap.set(movie.id, {
 				id: movie.id,
 				title: movie.title,

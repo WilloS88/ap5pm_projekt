@@ -70,10 +70,10 @@ export class Tab1Page implements OnInit {
 	loading = false;
 	errorMessage: string | null = null;
 
-	page = 1;
-	totalPages = 1;
+	page 				= 1;
+	totalPages 	= 1;
 
-	detailOpen = false;
+	detailOpen 		= false;
 	detailLoading = false;
 	detail: TmdbMovieDetail | null = null;
 
@@ -109,13 +109,17 @@ export class Tab1Page implements OnInit {
 	}
 
 	nextPage() {
-		if (this.page >= this.totalPages) return;
+		if (this.page >= this.totalPages) 
+			return;
+
 		this.page++;
 		this.loadPage();
 	}
 
 	prevPage() {
-		if (this.page <= 1) return;
+		if (this.page <= 1) 
+			return;
+
 		this.page--;
 		this.loadPage();
 	}
@@ -129,9 +133,9 @@ export class Tab1Page implements OnInit {
 	}
 
 	openDetail(movie: TmdbMovie) {
-		this.detailOpen = true;
-		this.detailLoading = true;
-		this.detail = null;
+		this.detailOpen 		= true;
+		this.detailLoading 	= true;
+		this.detail 				= null;
 
 		this.tmdb.getMovieDetail(movie.id).subscribe({
 			next: (d) => {
@@ -149,7 +153,7 @@ export class Tab1Page implements OnInit {
 
 	closeDetail() {
 		this.detailOpen = false;
-		this.detail = null;
+		this.detail 		= null;
 	}
 
 	getDirectors(detail: TmdbMovieDetail | null): string {
@@ -161,13 +165,19 @@ export class Tab1Page implements OnInit {
 	}
 
 	isFavorite(movie: TmdbMovie | TmdbMovieDetail | null | undefined): boolean {
-		if (!movie) return false;
+		if (!movie) 
+			return false;
+
 		return this.favs.isFavorite(movie.id);
 	}
 
 	toggleFavorite(movie: TmdbMovie | TmdbMovieDetail | null | undefined, ev?: Event) {
-		if (ev) ev.stopPropagation();
-		if (!movie) return;
+		if (ev) 
+			ev.stopPropagation();
+
+		if (!movie) 
+			return;
+		
 		this.favs.toggle(movie);
 	}
 }

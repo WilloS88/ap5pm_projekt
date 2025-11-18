@@ -64,11 +64,11 @@ export class Tab3Page implements OnInit {
 	favorites: TmdbMovie[] = [];
 
 	allFavorites: TmdbMovie[] = [];
-	page = 1;
-	totalPages = 1;
+	page 				= 1;
+	totalPages 	= 1;
 	private readonly pageSize = 20;
 
-	detailOpen = false;
+	detailOpen 		= false;
 	detailLoading = false;
 	detail: TmdbMovieDetail | null = null;
 
@@ -85,11 +85,15 @@ export class Tab3Page implements OnInit {
 	}
 
 	private updatePage() {
-		const all = this.allFavorites || [];
-		const total = Math.max(1, Math.ceil(all.length / this.pageSize));
+		const all 			= this.allFavorites || [];
+		const total 		= Math.max(1, Math.ceil(all.length / this.pageSize));
 		this.totalPages = total || 1;
-		if (this.page > total) this.page = total || 1;
-		if (this.page < 1) this.page = 1;
+
+		if (this.page > total) 
+			this.page = total || 1;
+		
+		if (this.page < 1) 
+			this.page = 1;
 
 		const start = (this.page - 1) * this.pageSize;
 		const end = start + this.pageSize;
@@ -101,9 +105,9 @@ export class Tab3Page implements OnInit {
 	}
 
 	openDetail(movie: TmdbMovie) {
-		this.detailOpen = true;
-		this.detailLoading = true;
-		this.detail = null;
+		this.detailOpen 		= true;
+		this.detailLoading 	= true;
+		this.detail 				= null;
 
 		this.tmdb.getMovieDetail(movie.id).subscribe({
 			next: (d) => {
@@ -121,7 +125,7 @@ export class Tab3Page implements OnInit {
 
 	closeDetail() {
 		this.detailOpen = false;
-		this.detail = null;
+		this.detail 		= null;
 	}
 
 	getDirectors(detail: TmdbMovieDetail | null): string {
@@ -136,19 +140,26 @@ export class Tab3Page implements OnInit {
 	}
 
 	toggleFavorite(movie: TmdbMovie | TmdbMovieDetail | null | undefined, ev?: Event) {
-		if (ev) ev.stopPropagation();
-		if (!movie) return;
+		if (ev) 
+			ev.stopPropagation();
+		if (!movie) 
+			return;
+
 		this.favs.toggle(movie);
 	}
 
 	nextPage() {
-		if (this.page >= this.totalPages) return;
+		if (this.page >= this.totalPages) 
+			return;
+
 		this.page++;
 		this.updatePage();
 	}
 
 	prevPage() {
-		if (this.page <= 1) return;
+		if (this.page <= 1) 
+			return;
+
 		this.page--;
 		this.updatePage();
 	}

@@ -69,7 +69,7 @@ type SearchType = "title" | "director" | null;
 	],
 })
 export class Tab2Page {
-	titleQuery = "";
+	titleQuery 		= "";
 	directorQuery = "";
 
 	movies: TmdbMovie[] = [];
@@ -78,12 +78,12 @@ export class Tab2Page {
 
 	lastSearch: SearchType = null;
 
-	page = 1;
-	totalPages = 1;
+	page 				= 1;
+	totalPages 	= 1;
 	private readonly pageSize = 20;
 	private directorAllMovies: TmdbMovie[] = [];
 
-	detailOpen = false;
+	detailOpen 		= false;
 	detailLoading = false;
 	detail: TmdbMovieDetail | null = null;
 
@@ -96,29 +96,29 @@ export class Tab2Page {
 	onTitleSearch(ev: CustomEvent) {
 		this.titleQuery = (ev.detail.value || "").toString();
 		this.lastSearch = "title";
-		this.page = 1;
+		this.page 			= 1;
 		this.searchByTitle();
 	}
 
 	onDirectorSearch(ev: CustomEvent) {
-		this.directorQuery = (ev.detail.value || "").toString();
-		this.lastSearch = "director";
-		this.page = 1;
+		this.directorQuery 	= (ev.detail.value || "").toString();
+		this.lastSearch 		= "director";
+		this.page 					= 1;
 		this.searchByDirector();
 	}
 
 	onTitleClear() {
-		this.titleQuery = "";
-		this.movies = [];
+		this.titleQuery 	= "";
+		this.movies 			= [];
 		this.errorMessage = null;
-		this.lastSearch = null;
+		this.lastSearch 	= null;
 	}
 
 	onDirectorClear() {
-		this.directorQuery = "";
-		this.movies = [];
-		this.errorMessage = null;
-		this.lastSearch = null;
+		this.directorQuery 	= "";
+		this.movies 				= [];
+		this.errorMessage 	= null;
+		this.lastSearch 		= null;
 	}
 
 	// ***** SEARCH BY TITLE *****
@@ -126,30 +126,37 @@ export class Tab2Page {
 	private searchByTitle(event?: any) {
 		const q = this.titleQuery.trim();
 		if (!q) {
-			this.movies = [];
+			this.movies 			= [];
 			this.errorMessage = null;
-			this.totalPages = 1;
-			if (event) event.target.complete();
+			this.totalPages 	= 1;
+
+			if (event) 
+				event.target.complete();
+
 			return;
 		}
 
-		if (!event) {
+		if (!event) 
 			this.loading = true;
-		}
+		
 		this.errorMessage = null;
 
 		this.tmdb.searchMovies(q, 1).subscribe({
 			next: (res) => {
-				this.movies = res.results || [];
+				this.movies 		= res.results || [];
 				this.totalPages = res.total_pages || 1;
-				this.loading = false;
-				if (event) event.target.complete();
+				this.loading 		= false;
+
+				if (event) 
+					event.target.complete();
 			},
 			error: (err) => {
 				console.error(err);
 				this.errorMessage = "Failed to load search results.";
-				this.loading = false;
-				if (event) event.target.complete();
+				this.loading 			= false;
+
+				if (event) 
+					event.target.complete();
 			},
 		});
 	}
@@ -159,17 +166,20 @@ export class Tab2Page {
 	private searchByDirector(event?: any) {
 		const q = this.directorQuery.trim();
 		if (!q) {
-			this.movies = [];
-			this.errorMessage = null;
-			this.directorAllMovies = [];
-			this.totalPages = 1;
-			if (event) event.target.complete();
+			this.movies 						= [];
+			this.errorMessage 			= null;
+			this.directorAllMovies 	= [];
+			this.totalPages 				= 1;
+
+			if (event) 
+				event.target.complete();
+
 			return;
 		}
 
-		if (!event) {
+		if (!event)
 			this.loading = true;
-		}
+	
 		this.errorMessage = null;
 
 		this.tmdb.searchPerson(q).subscribe({
@@ -177,19 +187,19 @@ export class Tab2Page {
 				const persons = Array.isArray(res?.results) ? res.results : [];
 
 				if (!persons.length) {
-					this.movies = [];
-					this.directorAllMovies = [];
-					this.errorMessage = `No director found for "${q}".`;
-					this.loading = false;
-					if (event) event.target.complete();
+					this.movies 						= [];
+					this.directorAllMovies 	= [];
+					this.errorMessage 			= `No director found for "${q}".`;
+					this.loading 						= false;
+
+					if (event) 
+						event.target.complete();
+					
 					return;
 				}
 
 				const director =
-					persons.find((p: any) => p.known_for_department === "Directing" || p.department === "Directing") ??
-					persons[0];
-
-				console.log("Chosen person for director search:", director, persons);
+					persons.find((p: any) => p.known_for_department === "Directing" || p.department === "Directing") ?? persons[0];
 
 				this.tmdb.getPersonMovies(director.id).subscribe({
 					next: (credits) => {
@@ -210,34 +220,44 @@ export class Tab2Page {
 						this.movies = directorMovies as TmdbMovie[];
 
 						this.loading = false;
-						if (event) event.target.complete();
+
+						if (event) 
+							event.target.complete();
 					},
 					error: (err) => {
 						console.error(err);
 						this.errorMessage = "Failed to load director movies.";
-						this.loading = false;
-						if (event) event.target.complete();
+						this.loading 			= false;
+
+						if (event) 
+							event.target.complete();
 					},
 				});
 			},
 			error: (err) => {
 				console.error(err);
 				this.errorMessage = "Failed to search person.";
-				this.loading = false;
-				if (event) event.target.complete();
+				this.loading 			= false;
+
+				if (event) 
+					event.target.complete();
 			},
 		});
 	}
 
 	private applyDirectorPage() {
-		const all = this.directorAllMovies || [];
+		const all		= this.directorAllMovies || [];
 		const total = Math.max(1, Math.ceil(all.length / this.pageSize));
 		this.totalPages = total;
-		if (this.page > total) this.page = total;
-		if (this.page < 1) this.page = 1;
+
+		if (this.page > total) 
+			this.page = total;
+
+		if (this.page < 1) 
+			this.page = 1;
 
 		const start = (this.page - 1) * this.pageSize;
-		const end = start + this.pageSize;
+		const end 	= start + this.pageSize;
 		this.movies = all.slice(start, end);
 	}
 
@@ -246,9 +266,11 @@ export class Tab2Page {
 	doRefresh(ev: any) {
 		if (this.lastSearch === "title") {
 			this.searchByTitle(ev);
-		} else if (this.lastSearch === "director") {
+		} 
+		else if (this.lastSearch === "director") {
 			this.searchByDirector(ev);
-		} else {
+		} 
+		else {
 			ev.target.complete();
 		}
 	}
@@ -256,7 +278,8 @@ export class Tab2Page {
 	retrySearch() {
 		if (this.lastSearch === "title") {
 			this.searchByTitle();
-		} else if (this.lastSearch === "director") {
+		} 
+		else if (this.lastSearch === "director") {
 			this.searchByDirector();
 		}
 	}
@@ -266,9 +289,9 @@ export class Tab2Page {
 	}
 
 	openDetail(movie: TmdbMovie) {
-		this.detailOpen = true;
-		this.detailLoading = true;
-		this.detail = null;
+		this.detailOpen 		= true;
+		this.detailLoading 	= true;
+		this.detail 				= null;
 
 		this.tmdb.getMovieDetail(movie.id).subscribe({
 			next: (d) => {
@@ -286,7 +309,7 @@ export class Tab2Page {
 
 	closeDetail() {
 		this.detailOpen = false;
-		this.detail = null;
+		this.detail 		= null;
 	}
 
 	getDirectors(detail: TmdbMovieDetail | null): string {
@@ -314,9 +337,11 @@ export class Tab2Page {
 	nextPage() {
 		if (this.page >= this.totalPages) return;
 		this.page++;
+
 		if (this.lastSearch === "title") {
 			this.searchByTitle();
-		} else if (this.lastSearch === "director") {
+		} 
+		else if (this.lastSearch === "director") {
 			this.applyDirectorPage();
 		}
 	}
@@ -324,9 +349,11 @@ export class Tab2Page {
 	prevPage() {
 		if (this.page <= 1) return;
 		this.page--;
+
 		if (this.lastSearch === "title") {
 			this.searchByTitle();
-		} else if (this.lastSearch === "director") {
+		} 
+		else if (this.lastSearch === "director") {
 			this.applyDirectorPage();
 		}
 	}
